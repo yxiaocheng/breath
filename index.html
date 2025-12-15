@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZenTools - 极简效率与冥想工具箱</title>
+    <meta name="description" content="包含世界时钟、正念呼吸、白噪音等功能的极简在线工具箱。无需下载，提升专注力。">
+    <style>
+        :root {
+            --bg-color: #f5f5f7;
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --card-bg: #ffffff;
+            --hover-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            --card-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #000000;
+                --text-primary: #f5f5f7;
+                --text-secondary: #86868b;
+                --card-bg: #1c1c1e;
+                --hover-shadow: 0 20px 40px rgba(0,0,0,0.3);
+                --card-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            }
+        }
+
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -0.02em;
+        }
+
+        p.subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 30px;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .card-icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+            width: 60px;
+            height: 60px;
+            background: var(--bg-color);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-desc {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .arrow {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+            color: #0071e3;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .card:hover .arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* 广告位预留样式 */
+        .ad-banner {
+            margin-top: 60px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            height: 120px; /* 常见的广告高度 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            border: 2px dashed #3a3a3c;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>ZenTools</h1>
+            <p class="subtitle">让数字生活回归平静与秩序</p>
+        </header>
+
+        <div class="grid">
+            <!-- 卡片 1: 正念呼吸 -->
+            <!-- href 填写你之前保存的呼吸网页文件名 -->
+            <a href="/breathe.html" class="card">
+                <div>
+                    <div class="card-icon">🫁</div>
+                    <div class="card-title">正念呼吸</div>
+                    <div class="card-desc">4-7-8 呼吸法引导，还原 Apple Watch 体验，缓解焦虑。</div>
+                </div>
+                <div class="arrow">→</div>
+            </a>
+
+            <!-- 卡片 2: 世界时钟 -->
+            <!-- href 填写你之前保存的时钟网页文件名 -->
+            <a href="/clock.html" class="card">
+                <div>
+                    <div class="card-icon">🌍</div>
+                    <div class="card-title">世界时钟</div>
+                    <div class="card-desc">极简设计，一览全球核心城市时间，自动适配深色模式。</div>
+                </div>
+                <div class="arrow">→</div>
+            </a>
+
+            <!-- 卡片 3: 专注白噪音 (预留位置，看起来内容丰富) -->
+            <a href="#" class="card" onclick="alert('即将上线，敬请期待！')">
+                <div>
+                    <div class="card-icon">🌧️</div>
+                    <div class="card-title">专注白噪音</div>
+                    <div class="card-desc">雨声、篝火与咖啡馆。屏蔽环境干扰，提升工作效率。</div>
+                </div>
+                <div class="arrow">→</div>
+            </a>
+            
+             <!-- 卡片 4: 更多 -->
+             <div class="card" style="opacity: 0.6; cursor: default;">
+                <div>
+                    <div class="card-icon">✨</div>
+                    <div class="card-title">更多工具</div>
+                    <div class="card-desc">番茄钟、灵感记录等功能正在开发中...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 这是一个预留的广告位，以后 AdSense 代码放这里 -->
+        <div class="ad-banner">
+            广告位 (Google AdSense) - 流量上来后显示
+        </div>
+
+        <footer style="text-align: center; margin-top: 60px; color: var(--text-secondary); font-size: 14px;">
+            © 2024 ZenTools. All rights reserved.
+        </footer>
+    </div>
+
+</body>
+</html>
