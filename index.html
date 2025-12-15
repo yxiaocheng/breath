@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#f5f5f7">
+    <title>Breathe - Find Your Calm</title>
+    <style>
+        :root {
+            --bg-color: #f5f5f7;
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --petal-color: rgba(90, 200, 250, 0.55); /* 稍微降低不透明度 */
+            --petal-color-2: rgba(88, 86, 214, 0.55);
+            --btn-bg: #0071e3;
+            --btn-text: #ffffff;
+            --blend-mode: multiply;
+            /* 新增文字背景色 */
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --status-text-color: #1d1d1f;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #000000;
+                --text-primary: #f5f5f7;
+                --text-secondary: #86868b;
+                --petal-color: rgba(100, 210, 255, 0.5);
+                --petal-color-2: rgba(94, 92, 230, 0.5);
+                --btn-bg: #3a3a3c;
+                --btn-text: #fff;
+                --blend-mode: screen; 
+                /* 深色模式下的毛玻璃 */
+                --glass-bg: rgba(40, 40, 40, 0.6);
+                --glass-border: rgba(255, 255, 255, 0.1);
+                --status-text-color: #ffffff;
+            }
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+            overflow: hidden;
+            transition: background-color 0.5s ease;
+        }
+
+        header {
+            position: absolute;
+            top: 12%;
+            text-align: center;
+            opacity: 1;
+            transition: opacity 0.5s;
+            z-index: 50;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin: 0 0 8px 0;
+            letter-spacing: -0.5px;
+        }
+
+        p.subtitle {
+            font-size: 17px;
+            color: var(--text-secondary);
+            margin: 0;
+            font-weight: 400;
+        }
+
+        .flower-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: scale(0.8); 
+            transition: transform 4s cubic-bezier(0.4, 0.0, 0.2, 1); /* 更自然的贝塞尔曲线 */
+            z-index: 10;
+        }
+
+        .petal {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background-color: var(--petal-color);
+            border-radius: 50%;
+            mix-blend-mode: var(--blend-mode);
+            transition: transform 4s cubic-bezier(0.4, 0.0, 0.2, 1);
+            transform: translate(0, 0) scale(0.5); 
+            will-change: transform; /* 性能优化 */
+        }
+
+        .petal:nth-child(even) {
+            background-color: var(--petal-color-2);
+        }
+
+        .flower-container.inhale {
+            transform: scale(1.35) rotate(90deg);
+        }
+
+        /* --- 修改后的文字样式 --- */
+        .status-text {
+            position: absolute;
+            /* 居中定位 */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            
+            /* 字体样式 */
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--status-text-color);
+            letter-spacing: 0.15em; /* 增加字间距，显得更高级 */
+            text-transform: uppercase; /* 大写，更有仪式感(如果用英文) */
+            
+            /* 毛玻璃胶囊样式 */
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px); /* 核心：模糊背景 */
+            -webkit-backdrop-filter: blur(12px); /* Safari 支持 */
+            padding: 12px 32px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); /* 柔和阴影 */
+            
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            z-index: 100; /* 确保在最上层 */
+            white-space: nowrap;
+        }
+
+        .status-text.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* 底部控制区 */
+        .controls {
+            position: absolute;
+            bottom: 15%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 50;
+        }
+
+        button {
+            background-color: var(--btn-bg);
+            color: var(--btn-text);
+            border: none;
+            padding: 16px 52px;
+            font-size: 17px;
+            font-weight: 600;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+        button:active {
+            transform: scale(0.96);
+        }
+
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header id="header">
+        <h1>正念呼吸</h1>
+        <p class="subtitle">让思绪慢下来</p>
+    </header>
+
+    <!-- 容器 -->
+    <div style="position: relative; width: 300px; height: 300px; display: flex; justify-content: center; align-items: center;">
+        
+        <div class="flower-container" id="flower">
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+        </div>
+
+        <!-- 现在的文字是浮在花朵上方的 -->
+        <div class="status-text" id="status">准备</div>
+    </div>
+
+    <div class="controls">
+        <button id="action-btn" onclick="toggleSession()">开始体验</button>
+    </div>
+
+    <script>
+        const flower = document.getElementById('flower');
+        const petals = document.querySelectorAll('.petal');
+        const statusText = document.getElementById('status');
+        const actionBtn = document.getElementById('action-btn');
+        const header = document.getElementById('header');
+        
+        let isRunning = false;
+        let breathingInterval;
+
+        // 初始化 CSS 角度
+        petals.forEach((petal, index) => {
+            const angle = index * 60;
+            petal.style.transform = `rotate(${angle}deg) translate(0px) scale(0.5)`;
+        });
+
+        function toggleSession() {
+            if (isRunning) {
+                stopSession();
+            } else {
+                startSession();
+            }
+        }
+
+        function startSession() {
+            isRunning = true;
+            actionBtn.textContent = "结束";
+            header.classList.add('hidden'); 
+            
+            // 立即改变状态
+            statusText.textContent = "吸气";
+            statusText.classList.add('show');
+
+            performBreathCycle();
+            breathingInterval = setInterval(performBreathCycle, 8000);
+        }
+
+        function stopSession() {
+            isRunning = false;
+            clearInterval(breathingInterval);
+            
+            actionBtn.textContent = "开始体验";
+            header.classList.remove('hidden');
+            statusText.classList.remove('show');
+            
+            flower.classList.remove('inhale');
+            petals.forEach((petal, index) => {
+                const angle = index * 60;
+                petal.style.transform = `rotate(${angle}deg) translate(0px) scale(0.5)`;
+            });
+            
+            setTimeout(() => {
+                if(!isRunning) statusText.textContent = "准备";
+            }, 800);
+        }
+
+        function performBreathCycle() {
+            // 吸气 (4秒)
+            statusText.textContent = "吸气";
+            flower.classList.add('inhale');
+            
+            if (navigator.vibrate) navigator.vibrate(50);
+
+            petals.forEach((petal, index) => {
+                const angle = index * 60;
+                // 增大位移距离，让花开得更大
+                petal.style.transform = `rotate(${angle}deg) translate(65px) scale(1)`;
+            });
+
+            // 呼气 (4秒后)
+            setTimeout(() => {
+                if (!isRunning) return;
+                
+                statusText.textContent = "呼气";
+                flower.classList.remove('inhale');
+                
+                if (navigator.vibrate) navigator.vibrate([30, 50, 30]);
+
+                petals.forEach((petal, index) => {
+                    const angle = index * 60;
+                    petal.style.transform = `rotate(${angle}deg) translate(0px) scale(0.5)`;
+                });
+
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
