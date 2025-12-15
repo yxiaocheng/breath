@@ -2,349 +2,328 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#f5f5f7">
-    
-    <!-- === 核心引流配置：社交分享卡片 (SEO) === -->
-    <!-- 标题：要吸引人 -->
-    <title>正念呼吸 - 找回你的平静</title>
-    <meta property="og:title" content="正念呼吸 - 一分钟让思绪慢下来">
-    <!-- 简介：告诉别人为什么点进来 -->
-    <meta property="og:description" content="极简的在线冥想工具，还原 Apple Watch 呼吸体验。无需下载，即刻放松。">
-    <!-- 这是一个占位符，如果你有网站截图，可以填入图片链接，分享时会显示图片 -->
-    <meta property="og:image" content=""> 
-    <meta property="og:type" content="website">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Clock - Apple Style</title>
     <style>
         :root {
             --bg-color: #f5f5f7;
+            --card-bg: #ffffff;
             --text-primary: #1d1d1f;
             --text-secondary: #86868b;
-            --petal-color: rgba(90, 200, 250, 0.55);
-            --petal-color-2: rgba(88, 86, 214, 0.55);
-            --btn-bg: #0071e3;
-            --btn-text: #ffffff;
-            --blend-mode: multiply;
-            --glass-bg: rgba(255, 255, 255, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.8);
-            --status-text-color: #1d1d1f;
+            --clock-face: #ffffff;
+            --hand-color: #1d1d1f;
+            --second-hand: #ff9500; /* Apple Orange */
+            --shadow: 0 10px 30px rgba(0,0,0,0.05);
+            --border-radius: 22px;
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg-color: #000000;
+                --card-bg: #1c1c1e;
                 --text-primary: #f5f5f7;
                 --text-secondary: #86868b;
-                --petal-color: rgba(100, 210, 255, 0.5);
-                --petal-color-2: rgba(94, 92, 230, 0.5);
-                --btn-bg: #3a3a3c;
-                --btn-text: #fff;
-                --blend-mode: screen; 
-                --glass-bg: rgba(40, 40, 40, 0.6);
-                --glass-border: rgba(255, 255, 255, 0.1);
-                --status-text-color: #ffffff;
+                --clock-face: #2c2c2e;
+                --hand-color: #ffffff;
+                --shadow: 0 10px 30px rgba(0,0,0,0.2);
             }
         }
 
         body {
             margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            padding: 40px 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-primary);
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
-            overflow: hidden;
-            transition: background-color 0.5s ease;
+            transition: background-color 0.3s ease;
         }
 
-        /* 微信遮罩样式 */
-        #wx-mask {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 9999;
-            text-align: center;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
         }
 
         header {
-            position: absolute;
-            top: 12%;
             text-align: center;
-            opacity: 1;
-            transition: opacity 0.5s;
-            z-index: 50;
+            margin-bottom: 50px;
         }
 
         h1 {
-            font-size: 28px;
-            font-weight: 600;
-            margin: 0 0 8px 0;
-            letter-spacing: -0.5px;
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin: 0;
         }
 
         p.subtitle {
-            font-size: 17px;
             color: var(--text-secondary);
-            margin: 0;
+            font-size: 19px;
+            margin-top: 10px;
             font-weight: 400;
         }
 
-        .flower-container {
-            position: relative;
-            width: 300px;
-            height: 300px;
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            transform: scale(0.8); 
-            transition: transform 4s cubic-bezier(0.4, 0.0, 0.2, 1);
+            justify-content: space-between;
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+        }
+
+        /* Analog Clock Styles */
+        .clock-face {
+            width: 160px;
+            height: 160px;
+            background-color: var(--clock-face);
+            border-radius: 50%;
+            position: relative;
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+        }
+
+        .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            border-radius: 4px;
             z-index: 10;
         }
 
-        .petal {
-            position: absolute;
-            width: 120px;
-            height: 120px;
-            background-color: var(--petal-color);
+        .hand.hour {
+            width: 4px;
+            height: 45px;
+            background-color: var(--hand-color);
+        }
+
+        .hand.minute {
+            width: 3px;
+            height: 65px;
+            background-color: var(--hand-color);
+        }
+
+        .hand.second {
+            width: 2px;
+            height: 70px;
+            background-color: var(--second-hand);
+            z-index: 11;
+        }
+
+        .center-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--hand-color);
             border-radius: 50%;
-            mix-blend-mode: var(--blend-mode);
-            transition: transform 4s cubic-bezier(0.4, 0.0, 0.2, 1);
-            transform: translate(0, 0) scale(0.5); 
-            will-change: transform;
-        }
-
-        .petal:nth-child(even) {
-            background-color: var(--petal-color-2);
-        }
-
-        .flower-container.inhale {
-            transform: scale(1.35) rotate(90deg);
-        }
-
-        .status-text {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 20px;
-            font-weight: 600;
-            color: var(--status-text-color);
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 12px 32px;
-            border-radius: 50px;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.8s ease, transform 0.8s ease;
-            z-index: 100;
-            white-space: nowrap;
+            z-index: 12;
         }
 
-        .status-text.show {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
+        .center-dot.second-dot {
+            width: 4px;
+            height: 4px;
+            background-color: var(--second-hand);
+            z-index: 13;
         }
 
-        .controls {
+        /* Markers (Ticks) */
+        .marker {
             position: absolute;
-            bottom: 15%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 50;
-        }
-
-        button {
-            background-color: var(--btn-bg);
-            color: var(--btn-text);
-            border: none;
-            padding: 16px 52px;
-            font-size: 17px;
-            font-weight: 600;
-            border-radius: 40px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        button:hover {
-            transform: scale(1.02);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-        }
-
-        button:active {
-            transform: scale(0.96);
-        }
-
-        .hidden {
-            opacity: 0;
-            pointer-events: none;
+            width: 2px;
+            height: 8px;
+            background-color: #d1d1d6;
+            left: 50%;
+            top: 0;
+            transform-origin: 50% 80px; /* Half of clock-face width */
         }
         
-        /* 微信指引箭头 */
-        .wx-arrow {
-            position: absolute; top: 20px; right: 20px; width: 60px; height: 60px;
+        .marker.quarter {
+            width: 3px;
+            height: 12px;
+            background-color: var(--text-secondary);
         }
-        .arrow-line { background: #fff; position: absolute; border-radius: 2px; }
+
+        /* Text Info */
+        .city-name {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .timezone-name {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 15px;
+        }
+
+        .digital-time {
+            font-size: 32px;
+            font-weight: 300;
+            font-feature-settings: "tnum";
+            font-variant-numeric: tabular-nums;
+            color: var(--text-primary);
+        }
+
+        .day-info {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
 
-    <!-- === 微信防拦截遮罩 === -->
-    <div id="wx-mask">
-        <div class="wx-arrow">
-            <div class="arrow-line" style="width: 2px; height: 40px; transform: rotate(45deg); right: 10px; top: 10px;"></div>
-            <div class="arrow-line" style="width: 2px; height: 20px; transform: rotate(-5deg); right: 16px; top: 2px;"></div>
-            <div class="arrow-line" style="width: 2px; height: 20px; transform: rotate(-95deg); right: 2px; top: 10px;"></div>
-        </div>
-        <div style="color: #fff; margin-top: 100px; font-size: 18px; line-height: 2;">
-            <p>由于微信访问限制</p>
-            <p style="font-size: 22px; font-weight: bold;">请点击右上角 ···</p>
-            <p>选择 <span style="border: 1px solid #fff; padding: 2px 8px; border-radius: 4px;">在浏览器打开</span></p>
-        </div>
-    </div>
+    <div class="container">
+        <header>
+            <h1>世界时钟</h1>
+            <p class="subtitle">当前各地时间概览</p>
+        </header>
 
-    <!-- 主界面 -->
-    <header id="header">
-        <h1>正念呼吸</h1>
-        <p class="subtitle">让思绪慢下来</p>
-    </header>
-
-    <div style="position: relative; width: 300px; height: 300px; display: flex; justify-content: center; align-items: center;">
-        <div class="flower-container" id="flower">
-            <div class="petal"></div>
-            <div class="petal"></div>
-            <div class="petal"></div>
-            <div class="petal"></div>
-            <div class="petal"></div>
-            <div class="petal"></div>
+        <div class="grid" id="clock-grid">
+            <!-- Clocks will be injected here via JavaScript -->
         </div>
-        <div class="status-text" id="status">准备</div>
-    </div>
-
-    <div class="controls">
-        <button id="action-btn" onclick="toggleSession()">开始体验</button>
     </div>
 
     <script>
-        // === 1. 微信检测逻辑 ===
-        function checkWeChat() {
-            var ua = navigator.userAgent.toLowerCase();
-            if(ua.match(/MicroMessenger/i) == "micromessenger") {
-                document.getElementById('wx-mask').style.display = 'block';
-                document.body.style.overflow = 'hidden'; // 禁止滚动
-                return true;
-            }
-            return false;
-        }
-        checkWeChat();
+        // 定义需要显示的城市和对应的 IANA 时区
+        const cities = [
+            { name: "北京", zone: "Asia/Shanghai", label: "CN" },
+            { name: "库比蒂诺", zone: "America/Los_Angeles", label: "Apple Park" },
+            { name: "纽约", zone: "America/New_York", label: "USA" },
+            { name: "伦敦", zone: "Europe/London", label: "UK" },
+            { name: "东京", zone: "Asia/Tokyo", label: "JP" },
+            { name: "悉尼", zone: "Australia/Sydney", label: "AU" },
+            { name: "巴黎", zone: "Europe/Paris", label: "FR" },
+            { name: "迪拜", zone: "Asia/Dubai", label: "UAE" }
+        ];
 
-        // === 2. 防盗链/防嵌套逻辑 ===
-        if (window.top !== window.self) {
-            try {
-                window.top.location = window.self.location;
-            } catch (e) {
-                // 如果跨域无法跳转，至少不在控制台报错
-            }
-        }
-        console.log("%c Breathe App - Crafted for Mindfulness.", "color: #0071e3; font-size: 16px; font-weight: bold;");
+        const grid = document.getElementById('clock-grid');
 
-        // === 3. 核心呼吸动画逻辑 ===
-        const flower = document.getElementById('flower');
-        const petals = document.querySelectorAll('.petal');
-        const statusText = document.getElementById('status');
-        const actionBtn = document.getElementById('action-btn');
-        const header = document.getElementById('header');
-        
-        let isRunning = false;
-        let breathingInterval;
-
-        // 初始化位置
-        petals.forEach((petal, index) => {
-            const angle = index * 60;
-            petal.style.transform = `rotate(${angle}deg) translate(0px) scale(0.5)`;
-        });
-
-        function toggleSession() {
-            if (isRunning) {
-                stopSession();
-            } else {
-                startSession();
-            }
-        }
-
-        function startSession() {
-            isRunning = true;
-            actionBtn.textContent = "结束";
-            header.classList.add('hidden'); 
-            
-            statusText.textContent = "吸气";
-            statusText.classList.add('show');
-
-            performBreathCycle();
-            breathingInterval = setInterval(performBreathCycle, 8000); // 8秒一个循环
-        }
-
-        function stopSession() {
-            isRunning = false;
-            clearInterval(breathingInterval);
-            
-            actionBtn.textContent = "开始体验";
-            header.classList.remove('hidden');
-            statusText.classList.remove('show');
-            
-            flower.classList.remove('inhale');
-            petals.forEach((petal, index) => {
-                const angle = index * 60;
-                petal.style.transform = `rotate(${angle}deg) translate(0px) scale(0.5)`;
-            });
-            
-            setTimeout(() => {
-                if(!isRunning) statusText.textContent = "准备";
-            }, 800);
-        }
-
-        function performBreathCycle() {
-            // 吸气 4秒
-            statusText.textContent = "吸气";
-            flower.classList.add('inhale');
-            
-            if (navigator.vibrate) navigator.vibrate(50);
-
-            petals.forEach((petal, index) => {
-                const angle = index * 60;
-                petal.style.transform = `rotate(${angle}deg) translate(65px) scale(1)`;
-            });
-
-            // 呼气 (4秒后执行)
-            setTimeout(() => {
-                if (!isRunning) return;
+        // 初始化时钟卡片
+        function initClocks() {
+            cities.forEach((city, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.id = `city-${index}`;
                 
-                statusText.textContent = "呼气";
-                flower.classList.remove('inhale');
-                
-                if (navigator.vibrate) navigator.vibrate([30, 50, 30]);
+                // 生成表盘刻度
+                let markersHtml = '';
+                for (let i = 0; i < 12; i++) {
+                    const isQuarter = i % 3 === 0;
+                    const rotate = i * 30;
+                    markersHtml += `<div class="marker ${isQuarter ? 'quarter' : ''}" style="transform: translateX(-50%) rotate(${rotate}deg)"></div>`;
+                }
 
-                petals.forEach((petal, index) => {
-                    const angle = index * 60;
-                    petal.style.transform = `rotate(${angle}deg) translate(0px) scale(0.5)`;
+                card.innerHTML = `
+                    <div class="timezone-name">${city.label}</div>
+                    <div class="clock-face">
+                        ${markersHtml}
+                        <div class="hand hour" id="hour-${index}"></div>
+                        <div class="hand minute" id="min-${index}"></div>
+                        <div class="hand second" id="sec-${index}"></div>
+                        <div class="center-dot"></div>
+                        <div class="center-dot second-dot"></div>
+                    </div>
+                    <div class="city-name">${city.name}</div>
+                    <div class="digital-time" id="time-${index}">--:--</div>
+                    <div class="day-info" id="day-${index}">今天</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // 更新时间逻辑
+        function updateClocks() {
+            const now = new Date();
+
+            cities.forEach((city, index) => {
+                // 使用 Intl API 获取特定时区的时间对象
+                const options = { timeZone: city.zone, hour12: false, hour: 'numeric', minute: 'numeric', second: 'numeric', weekday: 'short' };
+                const formatter = new Intl.DateTimeFormat('zh-CN', {
+                    ...options,
+                    year: 'numeric',
+                    month: 'numeric',
+                    day: 'numeric'
                 });
+                
+                // 将格式化后的字符串转回各部分数据，或者重新解析
+                // 为了精确计算指针角度，我们需要该时区的 H, M, S
+                // 方法：利用 toLocaleString 获取字符串，再解析
+                const timeStr = new Date().toLocaleString('en-US', { timeZone: city.zone });
+                const cityDate = new Date(timeStr);
 
-            }, 4000);
+                const seconds = cityDate.getSeconds();
+                const minutes = cityDate.getMinutes();
+                const hours = cityDate.getHours();
+
+                // 计算指针角度
+                const secondsDegrees = ((seconds / 60) * 360);
+                const minutesDegrees = ((minutes / 60) * 360) + ((seconds/60)*6);
+                const hoursDegrees = ((hours / 12) * 360) + ((minutes/60)*30);
+
+                // 更新指针 DOM
+                document.getElementById(`sec-${index}`).style.transform = `translateX(-50%) rotate(${secondsDegrees}deg)`;
+                document.getElementById(`min-${index}`).style.transform = `translateX(-50%) rotate(${minutesDegrees}deg)`;
+                document.getElementById(`hour-${index}`).style.transform = `translateX(-50%) rotate(${hoursDegrees}deg)`;
+
+                // 更新数字时间
+                const displayTime = cityDate.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+                document.getElementById(`time-${index}`).textContent = displayTime;
+
+                // 计算日期差异 (今天/明天/昨天)
+                // 获取本地日期的天数和目标时区日期的天数比较
+                const localDay = now.getDate();
+                const targetDay = cityDate.getDate();
+                let dayDiffText = "今天";
+                
+                // 简单的日期差判断 (注意：跨月/跨年时简单的 getDate 比较会有问题，这里做个简单处理)
+                // 更严谨的方法是比较时间戳整除天数，但为了不依赖库，我们只显示相对星期几
+                const weekday = new Intl.DateTimeFormat('zh-CN', { timeZone: city.zone, weekday: 'long' }).format(new Date());
+                
+                // 如果当前用户的本地时间和目标时间日期不同
+                const localDateString = now.toLocaleDateString('en-US', { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone });
+                const targetDateString = now.toLocaleDateString('en-US', { timeZone: city.zone });
+                
+                if (localDateString !== targetDateString) {
+                    // 判断是昨天还是明天
+                    const diff = new Date(targetDateString) - new Date(localDateString);
+                    if (diff > 0) dayDiffText = `明天, ${weekday}`;
+                    else dayDiffText = `昨天, ${weekday}`;
+                } else {
+                    dayDiffText = `今天, ${weekday}`;
+                }
+
+                document.getElementById(`day-${index}`).textContent = dayDiffText;
+            });
+
+            requestAnimationFrame(updateClocks);
         }
+
+        // 启动
+        initClocks();
+        // 使用 requestAnimationFrame 实现流畅动画，但为了性能也可以改用 setInterval
+        setInterval(updateClocks, 1000);
+        updateClocks(); // 立即执行一次
+
     </script>
 </body>
 </html>
